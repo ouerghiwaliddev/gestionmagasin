@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏢 Gestion de Stock - Dashboard</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-bg: #1f2937;
+            --light-bg: #f3f4f6;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        /* KPI Cards */
+        .kpi-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        
+        .kpi-card.danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .kpi-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .kpi-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+        
+        .kpi-card.danger .kpi-value {
+            color: var(--danger-color);
+        }
+        
+        .kpi-card.warning .kpi-value {
+            color: var(--warning-color);
+        }
+        
+        .kpi-card.success .kpi-value {
+            color: var(--success-color);
+        }
+        
+        .kpi-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        
+        /* Section Headers */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-bg);
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        /* Alerts Container */
+        .alerts-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .alert-item {
+            padding: 15px;
+            border-left: 5px solid var(--danger-color);
+            background-color: #fef2f2;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .alert-item.warning-level {
+            border-left-color: var(--warning-color);
+            background-color: #fffbeb;
+        }
+        
+        .alert-message {
+            flex-grow: 1;
+        }
+        
+        .alert-type {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .alert-type.critical {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .alert-type.warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        /* Products Table */
+        .products-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .products-table .table {
+            margin-bottom: 0;
+        }
+        
+        .products-table thead {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #374151 100%);
+        }
+        
+        .products-table th {
+            color: white;
+            font-weight: 600;
+            padding: 15px;
+            border: none;
+        }
+        
+        .products-table td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+        
+        .products-table tbody tr {
+            border-bottom: 1px solid var(--light-bg);
+            transition: background-color 0.2s;
+        }
+        
+        .products-table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+        
+        /* Stock Badges */
+        .stock-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .stock-critical {
+            background-color: #fee2e2;
+            color: var(--danger-color);
+        }
+        
+        .stock-warning {
+            background-color: #fef3c7;
+            color: var(--warning-color);
+        }
+        
+        .stock-ok {
+            background-color: #dcfce7;
+            color: var(--success-color);
+        }
+        
+        /* Action Buttons */
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            margin: 2px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            border: none;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            border: none;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .kpi-value {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.2rem;
+                margin-top: 20px;
+            }
+            
+            .products-table th, .products-table td {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-box2"></i> Stock Manager
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/product/add">
+                            <i class="bi bi-plus-circle"></i> Ajouter Produit
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/movements">
+                            <i class="bi bi-arrow-left-right"></i> Mouvements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/alerts">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Alertes
+                            {% if stats.active_alerts > 0 %}
+                                <span class="badge bg-danger">{{ stats.active_alerts }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid mt-4">
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- KPI Section -->
+        <div class="row mb-4">
+            <h2 class="section-title">📊 Tableau de Bord</h2>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="kpi-card">
+                    <div class="kpi-value">{{ stats.total_products }}</div>
+                    <div class="kpi-label">
+                        <i class="bi bi-box2"></i> Produits Total
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="kpi-card success">
+                    <div class="kpi-value">{{ stats.total_stock }}</div>
+                    <div class="kpi-label">
+                        <i class="bi bi-graph-up"></i> Unités en Stock
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="kpi-card danger">
+                    <div class="kpi-value">{{ stats.critical_products }}</div>
+                    <div class="kpi-label">
+                        <i class="bi bi-exclamation-circle"></i> Ruptures de Stock
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="kpi-card warning">
+                    <div class="kpi-value">{{ stats.low_stock_products }}</div>
+                    <div class="kpi-label">
+                        <i class="bi bi-exclamation-triangle"></i> Stock Faible
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="kpi-card">
+                    <div class="kpi-value">{{ stats.recent_movements }}</div>
+                    <div class="kpi-label">
+                        <i class="bi bi-arrow-left-right"></i> Mouvements (30j)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="kpi-card danger">
+                    <div class="kpi-value">{{ stats.active_alerts }}</div>
+                    <div class="kpi-label">
+                        <i class="bi bi-bell"></i> Alertes Actives
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Section -->
+        {% if alerts %}
+            <h2 class="section-title">⚠️ Alertes Actives</h2>
+            <div class="alerts-container">
+                {% for alert in alerts %}
+                    <div class="alert-item {% if alert.alert_type == 'WARNING' %}warning-level{% endif %}">
+                        <div class="alert-message">
+                            <div>
+                                <span class="alert-type {% if alert.alert_type == 'CRITICAL' %}critical{% else %}warning{% endif %}">
+                                    {{ alert.alert_type }}
+                                </span>
+                            </div>
+                            <strong>{{ alert.product.name }}</strong><br>
+                            <small>{{ alert.message }}</small><br>
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i>
+                                {{ alert.created_at.strftime('%d/%m/%Y %H:%M') }}
+                            </small>
+                        </div>
+                        <div>
+                            <a href="/alert/{{ alert.id }}/resolve" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-check-circle"></i> Résoudre
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Products Section -->
+        <h2 class="section-title">📦 Produits en Stock</h2>
+        
+        {% if products %}
+            <div class="products-table">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-box2"></i> Produit</th>
+                            <th><i class="bi bi-graph-up"></i> Stock</th>
+                            <th><i class="bi bi-exclamation-triangle"></i> Seuil</th>
+                            <th><i class="bi bi-info-circle"></i> État</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                            <tr>
+                                <td>
+                                    <strong>{{ product.name }}</strong><br>
+                                    <small class="text-muted">SKU: {{ product.sku }}</small>
+                                </td>
+                                <td>
+                                    {% if product.is_critical %}
+                                        <span class="stock-badge stock-critical">
+                                            {{ product.current_stock }} unités
+                                        </span>
+                                    {% elif product.is_low %}
+                                        <span class="stock-badge stock-warning">
+                                            {{ product.current_stock }} unités
+                                        </span>
+                                    {% else %}
+                                        <span class="stock-badge stock-ok">
+                                            {{ product.current_stock }} unités
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ product.threshold }} unités</td>
+                                <td>
+                                    {% if product.is_critical %}
+                                        <span class="badge bg-danger">🚨 Rupture</span>
+                                    {% elif product.is_low %}
+                                        <span class="badge bg-warning">⚠️ Faible</span>
+                                    {% else %}
+                                        <span class="badge bg-success">✅ OK</span>
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: right;">
+                                    <a href="/product/{{ product.id }}" class="btn btn-sm btn-info" title="Détails">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="/product/{{ product.id }}/movement" class="btn btn-sm btn-primary" title="Mouvement">
+                                        <i class="bi bi-arrow-left-right"></i>
+                                    </a>
+                                    <a href="/product/{{ product.id }}/edit" class="btn btn-sm btn-warning" title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="/product/{{ product.id }}/delete" class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('Êtes-vous sûr?');" title="Supprimer">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h5>Aucun produit</h5>
+                <p>Commencez par <a href="/product/add" class="text-primary">ajouter un nouveau produit</a></p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

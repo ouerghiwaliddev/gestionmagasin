@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des Mouvements</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --dark-bg: #1f2937;
+            --light-bg: #f3f4f6;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-bg);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        .filter-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead {
+            background: #f9fafb;
+        }
+        
+        .table th {
+            color: var(--dark-bg);
+            font-weight: 600;
+            padding: 15px;
+            border: none;
+        }
+        
+        .table td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+        
+        .table tbody tr {
+            border-bottom: 1px solid var(--light-bg);
+            transition: background-color 0.2s;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+        
+        .badge-in {
+            background: #dcfce7;
+            color: var(--success-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .badge-out {
+            background: #fee2e2;
+            color: var(--danger-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .quantity-in {
+            color: var(--success-color);
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        
+        .quantity-out {
+            color: var(--danger-color);
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        
+        .pagination {
+            margin-top: 20px;
+        }
+        
+        .form-select, .form-control {
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            transition: border-color 0.3s;
+        }
+        
+        .form-select:focus, .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .btn {
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .table {
+                font-size: 0.9rem;
+            }
+            
+            .table th, .table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-box2"></i> Stock Manager
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/movements">
+                            <i class="bi bi-arrow-left-right"></i> Mouvements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/alerts">
+                            <i class="bi bi-exclamation-triangle"></i> Alertes
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid mt-4">
+        
+        <h2 class="section-title">
+            <i class="bi bi-arrow-left-right"></i> Historique des Mouvements de Stock
+        </h2>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Filter Card -->
+        <div class="filter-card">
+            <form method="GET" class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label">
+                        <i class="bi bi-funnel"></i> Filtrer par Produit
+                    </label>
+                    <select class="form-select" name="product_id" onchange="this.form.submit()">
+                        <option value="">Tous les produits</option>
+                        {% for product in products %}
+                            <option value="{{ product.id }}" {% if selected_product_id == product.id %}selected{% endif %}>
+                                {{ product.name }} ({{ product.sku }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <a href="/movements" class="btn btn-secondary w-100">
+                        <i class="bi bi-arrow-clockwise"></i> Réinitialiser
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Movements Table -->
+        {% if movements.items %}
+            <div class="table-card">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-box2"></i> Produit</th>
+                            <th style="text-align: center;"><i class="bi bi-arrow-left-right"></i> Type</th>
+                            <th style="text-align: right;"><i class="bi bi-boxes"></i> Quantité</th>
+                            <th><i class="bi bi-chat-left-text"></i> Motif</th>
+                            <th><i class="bi bi-person"></i> Enregistré par</th>
+                            <th><i class="bi bi-calendar"></i> Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for movement in movements.items %}
+                            <tr>
+                                <td>
+                                    <a href="/product/{{ movement.product.id }}" class="text-decoration-none">
+                                        <strong>{{ movement.product.name }}</strong><br>
+                                        <small class="text-muted">{{ movement.product.sku }}</small>
+                                    </a>
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if movement.is_entry %}
+                                        <span class="badge-in">Entrée</span>
+                                    {% else %}
+                                        <span class="badge-out">Sortie</span>
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: right;">
+                                    {% if movement.is_entry %}
+                                        <span class="quantity-in">+{{ movement.quantity_change }}</span>
+                                    {% else %}
+                                        <span class="quantity-out">{{ movement.quantity_change }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ movement.reason or "-" }}</td>
+                                <td>{{ movement.recorded_by }}</td>
+                                <td>
+                                    <small class="text-muted">
+                                        {{ movement.timestamp.strftime('%d/%m/%Y %H:%M') }}
+                                    </small>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if movements.pages > 1 %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if movements.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if selected_product_id %}&product_id={{ selected_product_id }}{% endif %}">
+                                    <i class="bi bi-chevron-double-left"></i> Première
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ movements.prev_num }}{% if selected_product_id %}&product_id={{ selected_product_id }}{% endif %}">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for page_num in movements.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num == movements.page %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_num }}{% if selected_product_id %}&product_id={{ selected_product_id }}{% endif %}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if movements.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ movements.next_num }}{% if selected_product_id %}&product_id={{ selected_product_id }}{% endif %}">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ movements.pages }}{% if selected_product_id %}&product_id={{ selected_product_id }}{% endif %}">
+                                    Dernière <i class="bi bi-chevron-double-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h5>Aucun mouvement</h5>
+                <p>Commencez par <a href="/product/add" class="text-primary">ajouter un produit</a> et enregistrer un mouvement</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
