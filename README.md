@@ -359,7 +359,7 @@ Pour toute question ou bug:
 - [ ] Prévisions de stock (IA)
 - [ ] Intégration API externes
 - [ ] Mode hors ligne
-
+![logiciel-gestion-de-stock-magasin-en-ligne]
 ---
 
 **Créé avec ❤️ en utilisant Flask, SQLAlchemy et Bootstrap**
