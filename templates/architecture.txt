@@ -1,0 +1,6 @@
+inventory_app/
+├── app.py          # Main Flask application setup and routes
+├── models.py       # Database models (Product, Movement, Alert)
+└── templates/
+    ├── index.html   # Dashboard/Inventory view
+    └── add_product.html # Form for adding products

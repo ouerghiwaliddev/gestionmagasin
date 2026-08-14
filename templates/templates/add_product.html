@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Produit</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border: none;
+        }
+        
+        .card-header h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .form-label .badge {
+            background: var(--danger-color);
+            font-size: 0.6rem;
+            padding: 3px 6px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            padding: 10px 15px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-helper {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .input-group-text {
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            color: #6b7280;
+        }
+        
+        .input-group-text:focus {
+            border-color: var(--primary-color);
+        }
+        
+        .form-section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+            flex: 1;
+        }
+        
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+        }
+        
+        .alert-info {
+            background: #cffafe;
+            color: #0c4a6e;
+        }
+        
+        .icon-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Validation Feedback */
+        .valid-feedback, .invalid-feedback {
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .form-control.is-invalid {
+            border-color: var(--danger-color);
+        }
+        
+        .form-control.is-valid {
+            border-color: var(--success-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card-header {
+                padding: 20px;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .card-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="card">
+            <!-- En-tête -->
+            <div class="card-header">
+                <h2>
+                    <i class="bi bi-plus-circle"></i> Ajouter un Produit
+                </h2>
+                <small>Enregistrez un nouveau produit dans votre inventaire</small>
+            </div>
+            
+            <!-- Formulaire -->
+            <div class="card-body">
+                <!-- Messages Flash -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle"></i> {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <form method="POST" novalidate>
+                    <!-- Section: Informations Générales -->
+                    <div class="form-section-title">
+                        <i class="bi bi-info-circle"></i> Informations Générales
+                    </div>
+                    
+                    <!-- Nom du produit -->
+                    <div class="form-group">
+                        <label for="name" class="form-label">
+                            <i class="bi bi-box2"></i> Nom du produit
+                            <span class="badge">Obligatoire</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="name" 
+                            name="name" 
+                            placeholder="Ex: Laptop Dell XPS 13"
+                            required
+                        >
+                        <div class="form-helper">
+                            <i class="bi bi-lightbulb"></i> Le nom doit être unique
+                        </div>
+                    </div>
+                    
+                    <!-- SKU -->
+                    <div class="form-group">
+                        <label for="sku" class="form-label">
+                            <i class="bi bi-qr-code"></i> Code SKU
+                            <span class="badge">Obligatoire</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="sku" 
+                            name="sku" 
+                            placeholder="Ex: SKU-2024-001"
+                            required
+                        >
+                        <div class="form-helper">
+                            <i class="bi bi-lightbulb"></i> Identifiant unique du produit (Stock Keeping Unit)
+                        </div>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="description" class="form-label">
+                            <i class="bi bi-file-text"></i> Description
+                        </label>
+                        <textarea 
+                            class="form-control" 
+                            id="description" 
+                            name="description" 
+                            rows="3"
+                            placeholder="Description détaillée du produit..."
+                        ></textarea>
+                        <div class="form-helper">
+                            <i class="bi bi-lightbulb"></i> Optionnel - Ajoutez des détails
+                        </div>
+                    </div>
+                    
+                    <!-- Section: Gestion du Stock -->
+                    <div class="form-section-title">
+                        <i class="bi bi-graph-up"></i> Gestion du Stock
+                    </div>
+                    
+                    <!-- Stock Initial -->
+                    <div class="form-group">
+                        <label for="initial_stock" class="form-label">
+                            <i class="bi bi-boxes"></i> Stock Initial
+                        </label>
+                        <div class="input-group">
+                            <input 
+                                type="number" 
+                                class="form-control" 
+                                id="initial_stock" 
+                                name="initial_stock" 
+                                value="0"
+                                min="0"
+                                step="1"
+                            >
+                            <span class="input-group-text">unités</span>
+                        </div>
+                        <div class="form-helper">
+                            <i class="bi bi-lightbulb"></i> La quantité actuelle en stock
+                        </div>
+                    </div>
+                    
+                    <!-- Seuil d'alerte -->
+                    <div class="form-group">
+                        <label for="threshold" class="form-label">
+                            <i class="bi bi-exclamation-triangle"></i> Seuil d'alerte
+                        </label>
+                        <div class="input-group">
+                            <input 
+                                type="number" 
+                                class="form-control" 
+                                id="threshold" 
+                                name="threshold" 
+                                value="10"
+                                min="1"
+                                step="1"
+                            >
+                            <span class="input-group-text">unités</span>
+                        </div>
+                        <div class="form-helper">
+                            <i class="bi bi-lightbulb"></i> Une alerte s'affichera si le stock passe sous ce seuil
+                        </div>
+                    </div>
+                    
+                    <!-- Boutons d'action -->
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Ajouter le Produit
+                        </button>
+                        <a href="/" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Validation Form -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+        });
+    </script>
+</body>
+</html>
