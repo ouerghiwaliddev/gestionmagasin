@@ -278,6 +278,7 @@
                             <i class="bi bi-exclamation-triangle"></i> Alertes
                         </a>
                     </li>
+                    {% include '_auth_nav.html' %}
                 </ul>
             </div>
         </div>
@@ -369,9 +370,12 @@
                             <a href="/product/{{ alert.product.id }}/movement" class="btn btn-primary btn-sm">
                                 <i class="bi bi-arrow-left-right"></i> Mouvement
                             </a>
-                            <a href="/alert/{{ alert.id }}/resolve" class="btn btn-success btn-sm">
-                                <i class="bi bi-check-circle"></i> Résoudre
-                            </a>
+                            <form method="post" action="{{ url_for('resolve_alert', alert_id=alert.id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-success btn-sm" type="submit">
+                                    <i class="bi bi-check-circle"></i> Résoudre
+                                </button>
+                            </form>
                         </div>
                     </div>
                 {% endfor %}

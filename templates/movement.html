@@ -330,6 +330,7 @@
                 </div>
                 
                 <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <!-- Type de Mouvement -->
                     <div class="form-label">
                         <i class="bi bi-arrow-left-right"></i> Type de Mouvement

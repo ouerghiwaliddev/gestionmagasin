@@ -2,6 +2,29 @@
 
 Une application web complète de gestion de stock avec Flask, SQLite et SQLAlchemy. Système complet de suivi des mouvements, alertes de stock et dashboard intuitif.
 
+## Authentification et premier démarrage
+
+L'application possède deux rôles : **administrateur** et **gestionnaire**. Les deux peuvent gérer le stock; seuls les administrateurs peuvent gérer les comptes et consulter le journal d'audit.
+
+Avant le premier démarrage, copiez `.env.example` vers `.env` ou définissez au minimum les variables suivantes dans votre environnement :
+
+```env
+SECRET_KEY=une-cle-longue-et-aleatoire
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=un-mot-de-passe-securise
+ADMIN_DISPLAY_NAME=Administrateur
+```
+
+Si la table des utilisateurs est vide, ce compte administrateur est créé automatiquement. Le mot de passe doit contenir au moins 8 caractères. Après la première connexion, l'administrateur peut créer ou désactiver les autres comptes depuis **Utilisateurs**. Les comptes ne sont jamais supprimés afin de préserver le journal d'audit.
+
+Le filtre du tableau de bord est mémorisé par utilisateur : **Toujours**, **Annuel** (365 jours), **Trimestriel** (90 jours) ou **Mensuel** (30 jours). Il filtre uniquement l'activité; les stocks et alertes restent toujours actuels.
+
+Pour exécuter les tests :
+
+```powershell
+.\venv314\Scripts\python.exe -m unittest discover -s tests -v
+```
+
 ## 📋 Table des matières
 
 - [Caractéristiques](#caractéristiques)

@@ -3,10 +3,69 @@ Modèles SQLAlchemy pour l'application de gestion de stock.
 Gère les produits, mouvements de stock et alertes.
 """
 
+import json
+
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 
 db = SQLAlchemy()
+
+
+class User(UserMixin, db.Model):
+    """Compte authentifie de l'application."""
+    __tablename__ = 'user'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False, index=True)
+    display_name = db.Column(db.String(120), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(20), nullable=False, default='manager')
+    active = db.Column(db.Boolean, nullable=False, default=True)
+    dashboard_period = db.Column(db.String(20), nullable=False, default='always')
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+    last_login_at = db.Column(db.DateTime)
+
+    audit_logs = db.relationship('AuditLog', backref='actor', lazy=True)
+
+    @property
+    def is_active(self):
+        return self.active
+
+    @property
+    def is_admin(self):
+        return self.role == 'admin'
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+
+class AuditLog(db.Model):
+    """Journal append-only des actions effectuees dans l'application."""
+    __tablename__ = 'audit_log'
+
+    id = db.Column(db.Integer, primary_key=True)
+    actor_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True, index=True)
+    actor_username = db.Column(db.String(80), nullable=False)
+    action = db.Column(db.String(50), nullable=False, index=True)
+    target_type = db.Column(db.String(50), nullable=False, index=True)
+    target_id = db.Column(db.String(80))
+    details = db.Column(db.Text, nullable=False, default='{}')
+    created_at = db.Column(db.DateTime, nullable=False, index=True, default=datetime.utcnow)
+
+    @property
+    def details_data(self):
+        try:
+            return json.loads(self.details or '{}')
+        except (TypeError, ValueError):
+            return {}
 
 
 class Product(db.Model):

@@ -305,6 +305,7 @@
                             {% endif %}
                         </a>
                     </li>
+                    {% include '_auth_nav.html' %}
                 </ul>
             </div>
         </div>
@@ -336,21 +337,22 @@
                     <i class="bi bi-file-earmark-excel"></i> Télécharger Excel
                 </a>
             </div>
+            <form method="post" action="{{ url_for('set_dashboard_period') }}" class="d-flex flex-wrap gap-2 mb-4">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                {% for key, label in [('always', 'Tous'), ('yearly', 'Annuel'), ('quarterly', 'Trimestriel'), ('monthly', 'Mensuel')] %}
+                    <button type="submit" name="period" value="{{ key }}"
+                            class="btn {{ 'btn-primary' if stats.period == key else 'btn-outline-primary' }}">
+                        {{ label }}
+                    </button>
+                {% endfor %}
+                <span class="align-self-center text-muted ms-2">Activité : {{ stats.period_label }}</span>
+            </form>
             
             <div class="col-md-6 col-lg-4">
                 <div class="kpi-card">
                     <div class="kpi-value">{{ stats.total_products }}</div>
                     <div class="kpi-label">
                         <i class="bi bi-box2"></i> Produits Total
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-6 col-lg-4">
-                <div class="kpi-card success">
-                    <div class="kpi-value">{{ stats.total_stock }}</div>
-                    <div class="kpi-label">
-                        <i class="bi bi-graph-up"></i> Unités en Stock
                     </div>
                 </div>
             </div>
@@ -377,7 +379,7 @@
                 <div class="kpi-card">
                     <div class="kpi-value">{{ stats.recent_movements }}</div>
                     <div class="kpi-label">
-                        <i class="bi bi-arrow-left-right"></i> Mouvements (30j)
+                        <i class="bi bi-arrow-left-right"></i> Mouvements — {{ stats.period_label }}
                     </div>
                 </div>
             </div>
@@ -388,6 +390,19 @@
                     <div class="kpi-label">
                         <i class="bi bi-bell"></i> Alertes Actives
                     </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card success">
+                    <div class="kpi-value">{{ stats.entry_quantity }}</div>
+                    <div class="kpi-label">{{ stats.entry_count }} entrée(s) — {{ '%.2f'|format(stats.entry_value) }} TND</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="kpi-card danger">
+                    <div class="kpi-value">{{ stats.exit_quantity }}</div>
+                    <div class="kpi-label">{{ stats.exit_count }} sortie(s) — {{ '%.2f'|format(stats.exit_value) }} TND</div>
                 </div>
             </div>
         </div>
@@ -412,9 +427,12 @@
                             </small>
                         </div>
                         <div>
-                            <a href="/alert/{{ alert.id }}/resolve" class="btn btn-sm btn-outline-success">
-                                <i class="bi bi-check-circle"></i> Résoudre
-                            </a>
+                            <form method="post" action="{{ url_for('resolve_alert', alert_id=alert.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-outline-success" type="submit">
+                                    <i class="bi bi-check-circle"></i> Résoudre
+                                </button>
+                            </form>
                         </div>
                     </div>
                 {% endfor %}
@@ -478,10 +496,13 @@
                                     <a href="/product/{{ product.id }}/edit" class="btn btn-sm btn-warning" title="Modifier">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a href="/product/{{ product.id }}/delete" class="btn btn-sm btn-danger" 
-                                       onclick="return confirm('Êtes-vous sûr?');" title="Supprimer">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
+                                    <form method="post" action="{{ url_for('delete_product', product_id=product.id) }}" class="d-inline"
+                                          onsubmit="return confirm('Êtes-vous sûr ?');">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-sm btn-danger" type="submit" title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         {% endfor %}

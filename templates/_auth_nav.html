@@ -1,0 +1,26 @@
+{% if current_user.is_authenticated %}
+    {% if current_user.is_admin %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('users_admin') }}"><i class="bi bi-people"></i> Utilisateurs</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('audit_history') }}"><i class="bi bi-journal-text"></i> Audit</a>
+    </li>
+    {% endif %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle"></i> {{ current_user.display_name }}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><span class="dropdown-item-text text-muted">{{ 'Administrateur' if current_user.is_admin else 'Gestionnaire' }}</span></li>
+            <li><a class="dropdown-item" href="{{ url_for('change_password') }}">Changer le mot de passe</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form method="post" action="{{ url_for('logout') }}" class="px-3">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-link dropdown-item p-0" type="submit">Déconnexion</button>
+                </form>
+            </li>
+        </ul>
+    </li>
+{% endif %}

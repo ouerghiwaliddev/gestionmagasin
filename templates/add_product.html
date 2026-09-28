@@ -233,6 +233,7 @@
                 {% endwith %}
                 
                 <form method="POST" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <!-- Section: Informations Générales -->
                     <div class="form-section-title">
                         <i class="bi bi-info-circle"></i> Informations Générales

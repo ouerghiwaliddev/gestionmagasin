@@ -186,6 +186,7 @@
                 </div>
                 
                 <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <!-- Nom du produit -->
                     <div class="form-group">
                         <label for="name" class="form-label">
