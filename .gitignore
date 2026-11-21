@@ -18,3 +18,14 @@ __pycache__/
 
 # Logs
 *.log
+# .NET / Angular (dossier net/)
+net/**/bin/
+net/**/obj/
+net/frontend/node_modules/
+net/frontend/.angular/
+net/src/GestionMagasin.Api/wwwroot/
+net/src/GestionMagasin.Api/App_Data/
+
+# Visual Studio
+.vs/
+*.user
