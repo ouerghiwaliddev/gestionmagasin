@@ -34,7 +34,9 @@ psql -U postgres -c "CREATE DATABASE gestionmagasin"
 $env:ConnectionStrings__Default = "Host=localhost;Port=5432;Database=gestionmagasin;Username=postgres;Password=postgres"
 ```
 
-Les tables sont créées au démarrage. Ne jamais committer un vrai mot de passe : utiliser la variable d'environnement
+Les tables sont créées au démarrage. En production, on peut préparer la base à l'avance avec
+`net/db/setup-db.ps1 -Password "..." [-DbHost ...] [-Database ...]` (crée la base et les tables, rejouable sans effet
+si déjà fait). Le SQL est dans `net/db/schema.sql` (régénérable : `dotnet run -- export-schema`). Ne jamais committer un vrai mot de passe : utiliser la variable d'environnement
 ou `dotnet user-secrets`.
 
 Le build .NET construit aussi l'interface : `dotnet build` lance `npm run build` si `wwwroot` est vide (ou avec

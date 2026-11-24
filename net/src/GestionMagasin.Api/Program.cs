@@ -73,6 +73,14 @@ builder.Services
 
 var app = builder.Build();
 
+// ---------- dotnet run -- export-schema : affiche le SQL de création (aucune connexion à la base) ----------
+if (args is ["export-schema"])
+{
+    await using var s = app.Services.CreateAsyncScope();
+    Console.WriteLine(s.ServiceProvider.GetRequiredService<AppDbContext>().Database.GenerateCreateScript());
+    return;
+}
+
 // ---------- Initialisation de la base et du premier administrateur ----------
 await using (var scope = app.Services.CreateAsyncScope())
 {
