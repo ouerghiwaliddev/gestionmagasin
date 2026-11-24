@@ -31,11 +31,15 @@ Base **PostgreSQL** (≥ 13, extension `citext` disponible). Créer la base puis
 
 ```powershell
 psql -U postgres -c "CREATE DATABASE gestionmagasin"
-$env:ConnectionStrings__Default = "Host=localhost;Port=5432;Database=gestionmagasin;Username=postgres;Password=..."
+$env:ConnectionStrings__Default = "Host=localhost;Port=5432;Database=gestionmagasin;Username=postgres;Password=postgres"
 ```
 
 Les tables sont créées au démarrage. Ne jamais committer un vrai mot de passe : utiliser la variable d'environnement
 ou `dotnet user-secrets`.
+
+Le build .NET construit aussi l'interface : `dotnet build` lance `npm run build` si `wwwroot` est vide (ou avec
+`-p:BuildFrontend=true`), `dotnet publish` la reconstruit toujours et l'inclut dans `wwwroot` du dossier publié
+(`-p:BuildFrontend=false` pour l'ignorer). Une seule application sert donc l'API et le front.
 
 Développement avec rechargement : `dotnet run` dans l'API, puis `npm start` dans `frontend`
 (proxy `/api` vers `localhost:5237` défini dans `proxy.conf.json`, ouvrir http://localhost:4200).

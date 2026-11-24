@@ -13,4 +13,29 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.15" />
   </ItemGroup>
 
+  <!-- ===== Front Angular embarqué : le build .NET produit API + interface (wwwroot) ===== -->
+  <PropertyGroup>
+    <FrontendDir>$(MSBuildProjectDirectory)\..\..\frontend\</FrontendDir>
+    <FrontendOutput>$(MSBuildProjectDirectory)\wwwroot\</FrontendOutput>
+  </PropertyGroup>
+
+  <!-- Build : construit l'interface seulement si wwwroot est vide (ex. clone neuf).
+       Pour forcer : dotnet build -p:BuildFrontend=true ; pour ignorer : -p:BuildFrontend=false -->
+  <Target Name="BuildFrontend" BeforeTargets="BeforeBuild"
+          Condition="'$(BuildFrontend)' != 'false' And ('$(BuildFrontend)' == 'true' Or !Exists('$(FrontendOutput)index.html')) And Exists('$(FrontendDir)package.json')">
+    <Exec Command="npm install" WorkingDirectory="$(FrontendDir)" Condition="!Exists('$(FrontendDir)node_modules')" />
+    <Exec Command="npm run build" WorkingDirectory="$(FrontendDir)" />
+  </Target>
+
+  <!-- Publish : toujours reconstruire l'interface (production) et l'inclure dans le dossier publié. -->
+  <Target Name="PublishFrontend" BeforeTargets="ComputeFilesToPublish" Condition="'$(BuildFrontend)' != 'false' And Exists('$(FrontendDir)package.json')">
+    <Exec Command="npm install" WorkingDirectory="$(FrontendDir)" Condition="!Exists('$(FrontendDir)node_modules')" />
+    <Exec Command="npm run build" WorkingDirectory="$(FrontendDir)" />
+    <ItemGroup>
+      <!-- Les fichiers générés après l'évaluation du projet ne sont pas vus par les globs : on les ajoute ici. -->
+      <_FrontendFiles Include="$(FrontendOutput)**" />
+      <ResolvedFileToPublish Include="@(_FrontendFiles)" RelativePath="wwwroot\%(RecursiveDir)%(Filename)%(Extension)" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    </ItemGroup>
+  </Target>
+
 </Project>
