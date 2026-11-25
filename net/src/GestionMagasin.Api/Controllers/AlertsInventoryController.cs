@@ -1,6 +1,7 @@
 using GestionMagasin.Api.Data;
 using GestionMagasin.Api.Dtos;
 using GestionMagasin.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ public class AlertsController(AppDbContext db, AuditService audit) : ApiControll
         return Ok(new { active = active.Select(a => a.ToDto()), resolved = resolved.Select(a => a.ToDto()) });
     }
 
+    [Authorize(Policy = "Write")]
     [HttpPost("{id:int}/resolve")]
     public async Task<ActionResult> Resolve(int id)
     {

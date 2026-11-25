@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Api, errorMessage } from '../core/api';
+import { Auth } from '../core/auth';
 import { Alert } from '../core/models';
 import { Notifier } from '../core/notifier';
 import { Hero } from '../shared/hero';
@@ -27,7 +28,7 @@ import { Hero } from '../shared/hero';
                   <span class="small">{{ alert.createdAt | date: 'dd/MM/yyyy HH:mm' }} ·
                     <a [routerLink]="['/products', alert.productId]">{{ alert.productName }}</a></span>
                 </div>
-                <button class="btn btn-ghost sm" type="button" (click)="resolve(alert)"><i class="fa-solid fa-check"></i> Résoudre</button>
+                @if (auth.canWrite()) { <button class="btn btn-ghost sm" type="button" (click)="resolve(alert)"><i class="fa-solid fa-check"></i> Résoudre</button> }
               </div>
             }
           </div>
@@ -56,6 +57,7 @@ import { Hero } from '../shared/hero';
 })
 export class Alerts {
   private readonly api = inject(Api);
+  protected readonly auth = inject(Auth);
   private readonly notifier = inject(Notifier);
   protected readonly data = signal<{ active: Alert[]; resolved: Alert[] } | null>(null);
 

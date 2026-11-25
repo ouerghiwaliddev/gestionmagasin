@@ -17,6 +17,8 @@
   <PropertyGroup>
     <FrontendDir>$(MSBuildProjectDirectory)\..\..\frontend\</FrontendDir>
     <FrontendOutput>$(MSBuildProjectDirectory)\wwwroot\</FrontendOutput>
+    <!-- Chemin de base de l'application : / par défaut, /GestionMagasin/ si hébergée en sous-dossier IIS (défini dans FolderProfile.pubxml). -->
+    <FrontendBaseHref Condition="'$(FrontendBaseHref)' == ''">/</FrontendBaseHref>
   </PropertyGroup>
 
   <!-- Build : construit l'interface seulement si wwwroot est vide (ex. clone neuf).
@@ -24,13 +26,13 @@
   <Target Name="BuildFrontend" BeforeTargets="BeforeBuild"
           Condition="'$(BuildFrontend)' != 'false' And ('$(BuildFrontend)' == 'true' Or !Exists('$(FrontendOutput)index.html')) And Exists('$(FrontendDir)package.json')">
     <Exec Command="npm install" WorkingDirectory="$(FrontendDir)" Condition="!Exists('$(FrontendDir)node_modules')" />
-    <Exec Command="npm run build" WorkingDirectory="$(FrontendDir)" />
+    <Exec Command="npm run build -- --base-href $(FrontendBaseHref)" WorkingDirectory="$(FrontendDir)" />
   </Target>
 
   <!-- Publish : toujours reconstruire l'interface (production) et l'inclure dans le dossier publié. -->
   <Target Name="PublishFrontend" BeforeTargets="ComputeFilesToPublish" Condition="'$(BuildFrontend)' != 'false' And Exists('$(FrontendDir)package.json')">
     <Exec Command="npm install" WorkingDirectory="$(FrontendDir)" Condition="!Exists('$(FrontendDir)node_modules')" />
-    <Exec Command="npm run build" WorkingDirectory="$(FrontendDir)" />
+    <Exec Command="npm run build -- --base-href $(FrontendBaseHref)" WorkingDirectory="$(FrontendDir)" />
     <ItemGroup>
       <!-- Les fichiers générés après l'évaluation du projet ne sont pas vus par les globs : on les ajoute ici. -->
       <_FrontendFiles Include="$(FrontendOutput)**" />

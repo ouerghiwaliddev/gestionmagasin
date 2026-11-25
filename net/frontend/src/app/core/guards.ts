@@ -20,3 +20,10 @@ export const guestGuard: CanActivateFn = () => {
   const router = inject(Router);
   return auth.user() ? router.createUrlTree(['/']) : true;
 };
+
+/** Réservé aux rôles pouvant modifier (pas le rôle consultation). */
+export const writeGuard: CanActivateFn = () => {
+  const auth = inject(Auth);
+  const router = inject(Router);
+  return auth.canWrite() ? true : router.createUrlTree(['/forbidden']);
+};

@@ -28,7 +28,7 @@ interface Draft {
             <input id="nd" name="displayName" class="input" maxlength="120" required [(ngModel)]="form.displayName" /></div>
           <div class="field"><label for="nr">Rôle</label>
             <select id="nr" name="role" class="input" [(ngModel)]="form.role">
-              <option value="manager">Gestionnaire</option><option value="admin">Administrateur</option>
+              <option value="manager">Gestionnaire</option><option value="viewer">Consultation</option><option value="admin">Administrateur</option>
             </select></div>
           <div class="field"><label for="np">Mot de passe <b>*</b></label>
             <input id="np" name="password" type="password" class="input" minlength="8" required autocomplete="new-password" [(ngModel)]="form.password" />
@@ -53,7 +53,7 @@ interface Draft {
                 <td><input class="input sm" [name]="'dn' + u.id" maxlength="120" aria-label="Nom affiché" [(ngModel)]="drafts[u.id].displayName" /></td>
                 <td>
                   <select class="input sm" [name]="'rl' + u.id" aria-label="Rôle" [(ngModel)]="drafts[u.id].role">
-                    <option value="manager">Gestionnaire</option><option value="admin">Administrateur</option>
+                    <option value="manager">Gestionnaire</option><option value="viewer">Consultation</option><option value="admin">Administrateur</option>
                   </select>
                 </td>
                 <td class="small nowrap">{{ u.lastLoginAt ? (u.lastLoginAt | date: 'dd/MM/yyyy HH:mm') : 'Jamais' }}</td>

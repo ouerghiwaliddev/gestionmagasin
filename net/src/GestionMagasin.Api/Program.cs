@@ -55,7 +55,9 @@ builder.Services
 
 builder.Services.AddAuthorizationBuilder()
     .SetFallbackPolicy(new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build())
-    .AddPolicy("Admin", p => p.RequireRole(Roles.Admin));
+    .AddPolicy("Admin", p => p.RequireRole(Roles.Admin))
+    // Écriture (stock, produits, référentiels, alertes) : tout sauf le rôle consultation.
+    .AddPolicy("Write", p => p.RequireRole(Roles.Admin, Roles.Manager));
 
 builder.Services.AddAntiforgery(options =>
 {

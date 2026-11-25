@@ -4,8 +4,10 @@ public static class Roles
 {
     public const string Admin = "admin";
     public const string Manager = "manager";
+    /// <summary>Consultation : lecture et exports uniquement, aucune modification du stock ni des données.</summary>
+    public const string Viewer = "viewer";
 
-    public static bool IsValid(string? role) => role is Admin or Manager;
+    public static bool IsValid(string? role) => role is Admin or Manager or Viewer;
 }
 
 public class User

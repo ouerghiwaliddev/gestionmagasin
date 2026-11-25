@@ -11,6 +11,7 @@ import {
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
 import { Auth } from './core/auth';
+import { apiBaseInterceptor } from './core/api-base.interceptor';
 import { sessionInterceptor } from './core/session.interceptor';
 
 registerLocaleData(localeFr);
@@ -22,7 +23,7 @@ export const appConfig: ApplicationConfig = {
     // Le jeton CSRF (cookie XSRF-TOKEN) est renvoyé par Angular dans l'en-tête X-XSRF-TOKEN.
     provideHttpClient(
       withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }),
-      withInterceptors([sessionInterceptor]),
+      withInterceptors([sessionInterceptor, apiBaseInterceptor]),
     ),
     { provide: LOCALE_ID, useValue: 'fr' },
     // Vérifie la session (et initialise le jeton CSRF) avant d'afficher quoi que ce soit.

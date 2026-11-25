@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Api, errorMessage } from '../core/api';
+import { Auth } from '../core/auth';
 import { Reference, ReferenceSection } from '../core/models';
 import { Notifier } from '../core/notifier';
 import { Hero } from '../shared/hero';
@@ -18,22 +19,22 @@ import { Hero } from '../shared/hero';
           <div style="padding: 22px 22px 6px">
             <h2 style="margin: 0"><i class="fa-solid" [class]="section.icon"></i> {{ section.plural }} ({{ section.items.length }})</h2>
           </div>
-          <form class="row" style="flex-wrap: nowrap; padding: 14px 22px" (ngSubmit)="create(section)">
+          @if (auth.canWrite()) { <form class="row" style="flex-wrap: nowrap; padding: 14px 22px" (ngSubmit)="create(section)">
             <input class="input sm" [name]="'new-' + section.kind" maxlength="120" required [placeholder]="'Nouveau : ' + section.singular.toLowerCase()"
                    [attr.aria-label]="'Nom du ' + section.singular.toLowerCase()" [(ngModel)]="newNames[section.kind]" />
             <button class="btn btn-primary sm" type="submit" title="Ajouter"><i class="fa-solid fa-plus"></i></button>
-          </form>
+          </form> }
           <div style="max-height: 460px; overflow-y: auto">
             @for (item of section.items; track item.id) {
               <div class="row" style="flex-wrap: nowrap; padding: 8px 22px; border-top: 1px solid var(--border)">
                 <input class="input sm" [name]="section.kind + '-' + item.id" maxlength="120" aria-label="Nom"
                        [style.text-decoration]="item.active ? 'none' : 'line-through'" [style.color]="item.active ? '' : 'var(--muted)'"
-                       [(ngModel)]="item.name" (keydown.enter)="rename(section, item); $event.preventDefault()" />
-                <button class="btn btn-ghost sm" type="button" title="Renommer" (click)="rename(section, item)"><i class="fa-solid fa-check"></i></button>
+                       [(ngModel)]="item.name" [readonly]="!auth.canWrite()" (keydown.enter)="rename(section, item); $event.preventDefault()" />
+                @if (auth.canWrite()) { <button class="btn btn-ghost sm" type="button" title="Renommer" (click)="rename(section, item)"><i class="fa-solid fa-check"></i></button>
                 <button class="btn sm" [class]="item.active ? 'btn sm btn-danger' : 'btn sm btn-success'" type="button"
                         [title]="item.active ? 'Désactiver' : 'Réactiver'" (click)="toggle(section, item)">
                   <i class="fa-solid" [class]="item.active ? 'fa-eye-slash' : 'fa-eye'"></i>
-                </button>
+                </button> }
               </div>
             } @empty {
               <div class="empty" style="padding: 28px 20px">Aucun élément.</div>
@@ -46,6 +47,7 @@ import { Hero } from '../shared/hero';
 })
 export class Referentials {
   private readonly api = inject(Api);
+  protected readonly auth = inject(Auth);
   private readonly notifier = inject(Notifier);
 
   protected readonly sections = signal<ReferenceSection[]>([]);

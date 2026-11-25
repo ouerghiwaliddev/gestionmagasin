@@ -2,6 +2,7 @@ using GestionMagasin.Api.Data;
 using GestionMagasin.Api.Domain;
 using GestionMagasin.Api.Dtos;
 using GestionMagasin.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -49,6 +50,7 @@ public class MovementsController(
         return Ok(new PageDto<MovementDto>(items.Select(m => m.ToDto()).ToList(), page, pages, total, PageSize));
     }
 
+    [Authorize(Policy = "Write")]
     [HttpPost("api/products/{productId:int}/movements")]
     public async Task<ActionResult> Create(int productId, MovementRequest request)
     {
@@ -97,6 +99,8 @@ public class MovementsController(
         var user = await current.RequireAsync();
         var change = isEntry ? request.Quantity : -request.Quantity;
         var reason = (request.Reason ?? "").Trim();
+        // Une sortie sert aussi à corriger une entrée erronée : le motif est obligatoire (traçabilité).
+        if (!isEntry && reason.Length == 0) return Fail("Le motif est obligatoire pour une sortie.");
         var movement = new Movement
         {
             Product = product,
@@ -140,6 +144,22 @@ public class MovementsController(
             product = product.ToDto(),
             warning,
         });
+    }
+
+    /// <summary>
+    /// Les mouvements sont immuables. Une entrée en stock ne peut être ni modifiée ni supprimée :
+    /// pour corriger une erreur de saisie, le gestionnaire enregistre une sortie avec motif.
+    /// </summary>
+    [Authorize(Policy = "Write")]
+    [HttpPut("api/movements/{id:int}")]
+    [HttpDelete("api/movements/{id:int}")]
+    public async Task<ActionResult> Modify(int id)
+    {
+        var movement = await db.Movements.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+        if (movement is null) return Missing("Mouvement introuvable.");
+        return Fail(movement.MovementType == MovementTypes.In
+            ? "Une entrée en stock ne peut pas être modifiée ni supprimée. Enregistrez une sortie avec le motif « erreur de saisie » (ou autre) pour corriger le stock."
+            : "Un mouvement enregistré ne peut pas être modifié.");
     }
 
     [HttpGet("api/export/movements/{format}")]

@@ -2,6 +2,7 @@ using GestionMagasin.Api.Data;
 using GestionMagasin.Api.Domain;
 using GestionMagasin.Api.Dtos;
 using GestionMagasin.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +38,7 @@ public class ReferentialsController(AppDbContext db, AuditService audit) : ApiCo
         }));
     }
 
+    [Authorize(Policy = "Write")]
     [HttpPost("{kind}")]
     public Task<ActionResult> Create(string kind, NameRequest request) => kind switch
     {
@@ -46,6 +48,7 @@ public class ReferentialsController(AppDbContext db, AuditService audit) : ApiCo
         _ => Task.FromResult<ActionResult>(Missing("Liste inconnue.")),
     };
 
+    [Authorize(Policy = "Write")]
     [HttpPut("{kind}/{id:int}")]
     public Task<ActionResult> Rename(string kind, int id, NameRequest request) => kind switch
     {
@@ -55,6 +58,7 @@ public class ReferentialsController(AppDbContext db, AuditService audit) : ApiCo
         _ => Task.FromResult<ActionResult>(Missing("Liste inconnue.")),
     };
 
+    [Authorize(Policy = "Write")]
     [HttpPost("{kind}/{id:int}/toggle")]
     public Task<ActionResult> Toggle(string kind, int id) => kind switch
     {

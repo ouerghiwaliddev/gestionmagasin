@@ -11,6 +11,8 @@ export class Auth {
   /** undefined : session pas encore vérifiée ; null : non connecté. */
   readonly user = signal<User | null | undefined>(undefined);
   readonly isAdmin = computed(() => this.user()?.role === 'admin');
+  /** Admin et gestionnaire peuvent modifier ; le rôle consultation est en lecture seule (rapports et exports inclus). */
+  readonly canWrite = computed(() => this.user()?.role !== 'viewer');
 
   async load(): Promise<void> {
     try {

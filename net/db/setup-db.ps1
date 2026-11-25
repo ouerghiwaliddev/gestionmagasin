@@ -5,7 +5,7 @@
   Prérequis : psql (client PostgreSQL) dans le PATH, ou installé sous C:\Program Files\PostgreSQL\*\bin.
 #>
 param(
-    [string]$DbHost = "localhost",
+    [string]$DbHost = "192.168.10.69",
     [int]$Port = 5432,
     [string]$User = "postgres",
     [string]$Database = "gestionmagasin",

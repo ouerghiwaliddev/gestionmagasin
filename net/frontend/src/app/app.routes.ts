@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard, authGuard, guestGuard } from './core/guards';
+import { adminGuard, authGuard, guestGuard, writeGuard } from './core/guards';
 
 export const routes: Routes = [
   {
@@ -14,10 +14,10 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/shell').then((m) => m.Shell),
     children: [
       { path: '', pathMatch: 'full', title: 'Tableau de bord', loadComponent: () => import('./pages/dashboard').then((m) => m.Dashboard) },
-      { path: 'products/new', title: 'Nouveau produit', loadComponent: () => import('./pages/product-form').then((m) => m.ProductForm) },
+      { path: 'products/new', canActivate: [writeGuard], title: 'Nouveau produit', loadComponent: () => import('./pages/product-form').then((m) => m.ProductForm) },
       { path: 'products/:id', title: 'Produit', loadComponent: () => import('./pages/product-detail').then((m) => m.ProductDetail) },
-      { path: 'products/:id/edit', title: 'Modifier le produit', loadComponent: () => import('./pages/product-form').then((m) => m.ProductForm) },
-      { path: 'products/:id/movement', title: 'Mouvement de stock', loadComponent: () => import('./pages/movement-form').then((m) => m.MovementForm) },
+      { path: 'products/:id/edit', canActivate: [writeGuard], title: 'Modifier le produit', loadComponent: () => import('./pages/product-form').then((m) => m.ProductForm) },
+      { path: 'products/:id/movement', canActivate: [writeGuard], title: 'Mouvement de stock', loadComponent: () => import('./pages/movement-form').then((m) => m.MovementForm) },
       { path: 'movements', title: 'Mouvements', loadComponent: () => import('./pages/movements').then((m) => m.Movements) },
       { path: 'alerts', title: 'Alertes', loadComponent: () => import('./pages/alerts').then((m) => m.Alerts) },
       { path: 'inventory', title: 'Inventaire', loadComponent: () => import('./pages/inventory').then((m) => m.InventoryPage) },

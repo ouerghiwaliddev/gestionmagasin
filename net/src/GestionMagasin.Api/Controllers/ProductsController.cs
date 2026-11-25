@@ -2,6 +2,7 @@ using GestionMagasin.Api.Data;
 using GestionMagasin.Api.Domain;
 using GestionMagasin.Api.Dtos;
 using GestionMagasin.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,6 +48,7 @@ public class ProductsController(AppDbContext db, AuditService audit, StockServic
             : Ok(new { p.Id, p.Name, p.CurrentStock, p.Threshold, p.Status, p.IsCritical, p.IsLow });
     }
 
+    [Authorize(Policy = "Write")]
     [HttpPost]
     public async Task<ActionResult<ProductDto>> Create(ProductCreateRequest request)
     {
@@ -74,6 +76,7 @@ public class ProductsController(AppDbContext db, AuditService audit, StockServic
         return CreatedAtAction(nameof(Get), new { id = product.Id }, product.ToDto());
     }
 
+    [Authorize(Policy = "Write")]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<ProductDto>> Update(int id, ProductUpdateRequest request)
     {
@@ -100,6 +103,7 @@ public class ProductsController(AppDbContext db, AuditService audit, StockServic
     }
 
     /// <summary>Supprime le produit ainsi que ses mouvements et alertes (cascade).</summary>
+    [Authorize(Policy = "Write")]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {

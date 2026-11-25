@@ -1,4 +1,4 @@
-export type Role = 'admin' | 'manager';
+export type Role = 'admin' | 'manager' | 'viewer';
 export type MovementType = 'IN' | 'OUT';
 
 export interface User {

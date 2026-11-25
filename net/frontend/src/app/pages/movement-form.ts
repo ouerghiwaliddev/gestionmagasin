@@ -18,6 +18,7 @@ const ENTRY_REASONS = [
 const EXIT_REASONS = [
   { value: 'Vente', label: 'Vente client' },
   { value: 'Retour fournisseur', label: 'Retour fournisseur' },
+  { value: 'Erreur de saisie', label: 'Erreur de saisie (correction)' },
   { value: 'Casse', label: 'Produit cassé / endommagé' },
   { value: 'Perte', label: 'Perte / disparition' },
   { value: 'Usage interne', label: 'Usage interne' },

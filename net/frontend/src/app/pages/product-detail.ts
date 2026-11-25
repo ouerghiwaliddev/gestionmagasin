@@ -2,6 +2,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Api, errorMessage } from '../core/api';
+import { Auth } from '../core/auth';
 import { Alert, Movement, Product } from '../core/models';
 import { Notifier } from '../core/notifier';
 import { Hero } from '../shared/hero';
@@ -18,8 +19,8 @@ interface ProductView {
   template: `
     @if (view(); as v) {
       <app-hero eyebrow="Produit" [title]="v.product.name" [lead]="'SKU ' + v.product.sku + (v.product.description ? ' · ' + v.product.description : '')">
-        <a class="btn btn-success" [routerLink]="['/products', v.product.id, 'movement']"><i class="fa-solid fa-right-left"></i> Mouvement</a>
-        <a class="btn btn-light" [routerLink]="['/products', v.product.id, 'edit']"><i class="fa-solid fa-pen"></i> Modifier</a>
+        @if (auth.canWrite()) { <a class="btn btn-success" [routerLink]="['/products', v.product.id, 'movement']"><i class="fa-solid fa-right-left"></i> Mouvement</a>
+        <a class="btn btn-light" [routerLink]="['/products', v.product.id, 'edit']"><i class="fa-solid fa-pen"></i> Modifier</a> }
         <button class="btn btn-light" type="button" (click)="download('pdf')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
         <button class="btn btn-light" type="button" (click)="download('excel')"><i class="fa-solid fa-file-excel"></i> Excel</button>
       </app-hero>
@@ -92,7 +93,7 @@ interface ProductView {
 
       <div class="actions-bar">
         <a class="btn btn-ghost" routerLink="/"><i class="fa-solid fa-arrow-left"></i> Retour</a>
-        <button class="btn btn-danger" type="button" (click)="remove(v.product)"><i class="fa-solid fa-trash"></i> Supprimer le produit</button>
+        @if (auth.canWrite()) { <button class="btn btn-danger" type="button" (click)="remove(v.product)"><i class="fa-solid fa-trash"></i> Supprimer le produit</button> }
       </div>
     } @else if (error()) {
       <div class="msg msg-error"><i class="fa-solid fa-circle-exclamation"></i> {{ error() }}</div>
@@ -103,6 +104,7 @@ interface ProductView {
 })
 export class ProductDetail {
   private readonly api = inject(Api);
+  protected readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly notifier = inject(Notifier);
 

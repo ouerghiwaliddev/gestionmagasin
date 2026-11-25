@@ -16,7 +16,7 @@ import { Hero } from '../shared/hero';
               [lead]="'Bonjour ' + (auth.user()?.displayName ?? '') + ' : état des stocks et activité de la période.'">
       <button class="btn btn-light" type="button" (click)="download('pdf')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
       <button class="btn btn-light" type="button" (click)="download('excel')"><i class="fa-solid fa-file-excel"></i> Excel</button>
-      <a class="btn btn-success" routerLink="/products/new"><i class="fa-solid fa-plus"></i> Nouveau produit</a>
+      @if (auth.canWrite()) { <a class="btn btn-success" routerLink="/products/new"><i class="fa-solid fa-plus"></i> Nouveau produit</a> }
     </app-hero>
 
     @if (data(); as d) {
@@ -89,7 +89,7 @@ import { Hero } from '../shared/hero';
                     </td>
                     <td class="num muted small">{{ p.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
                     <td class="right nowrap">
-                      <a class="btn btn-ghost sm" [routerLink]="['/products', p.id, 'movement']"><i class="fa-solid fa-right-left"></i> Mouvement</a>
+                      @if (auth.canWrite()) { <a class="btn btn-ghost sm" [routerLink]="['/products', p.id, 'movement']"><i class="fa-solid fa-right-left"></i> Mouvement</a> }
                     </td>
                   </tr>
                 }

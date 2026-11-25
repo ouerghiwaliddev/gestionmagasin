@@ -96,7 +96,7 @@ type MenuName = 'settings' | 'user' | null;
               <div class="dropdown" role="menu">
                 <div class="who">
                   <b>{{ auth.user()?.displayName }}</b>
-                  {{ auth.isAdmin() ? 'Administrateur' : 'Gestionnaire' }}
+                  {{ auth.isAdmin() ? 'Administrateur' : auth.canWrite() ? 'Gestionnaire' : 'Consultation' }}
                 </div>
                 <a routerLink="/account/password" role="menuitem"><i class="fa-solid fa-key"></i> Changer le mot de passe</a>
                 <button type="button" role="menuitem" (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
